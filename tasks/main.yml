@@ -74,7 +74,7 @@
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
-  loop: "{{ dh_lab }}"
+  loop: "{{ dh_lab|dict2items }}"
   loop_control:
     pause: 3
   tags:
@@ -105,7 +105,7 @@
     --subnet "Provisionning-2"
   delegate_to: 127.0.0.1
   ignore_errors: yes
-  loop: "{{ proxmox_vm_dict }}"
+  loop: "{{ dh_lab|dict2items }}"
   tags:
     - deploy_dh_lab
 
@@ -117,6 +117,6 @@
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
     state: started
-  loop: "{{ proxmox_vm_dict }}"
+  loop: "{{ dh_lab|dict2items }}"
   tags:
     - deploy_dh_lab
