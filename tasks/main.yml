@@ -38,6 +38,8 @@
     --interface "primary=true,mac={{ item.value.mac_address }},ip={{ item.value.vm_ip_address }},name=ens18,managed=true,provision=true,domain=cmaker.studio"
     --operatingsystem "{{ item.value.os | default('Debian 9.7')   }}"
     --partition-table "{{ item.value.partition | default('CMaker - ubuntu_debian') }}"
+    --location "Default Location"
+    --organization "Default Organization"
     --root-password "{{ proxmox_password }}"
     --subnet "Provisionning-2"
   delegate_to: 127.0.0.1
