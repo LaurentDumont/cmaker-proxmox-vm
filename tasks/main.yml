@@ -105,6 +105,7 @@
     --root-password "{{ proxmox_password }}"
     --subnet "Provisionning-2"
     --location "Default Location"
+    --organization "Default Organization"
   delegate_to: 127.0.0.1
   ignore_errors: yes
   loop: "{{ dh_lab|dict2items }}"
