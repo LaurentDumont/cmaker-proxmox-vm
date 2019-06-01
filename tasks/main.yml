@@ -74,9 +74,10 @@
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
+    pool: "{{ item.value.pool | default('') }}"
   loop: "{{ dh_lab|dict2items }}"
   loop_control:
-    pause: 3
+    pause: 1
   tags:
     - deploy_dh_lab
 
@@ -131,6 +132,6 @@
     state: absent
   loop: "{{ dh_lab|dict2items }}"
   loop_control:
-    pause: 3
+    pause: 1
   tags:
     - delete_dh_lab
