@@ -132,6 +132,7 @@
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
     state: stopped
+    force: yes
   loop: "{{ dh_lab|dict2items }}"
   loop_control:
     pause: 1
