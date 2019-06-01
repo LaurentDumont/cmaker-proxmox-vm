@@ -124,6 +124,20 @@
   tags:
     - deploy_dh_lab
 
+- name: STOP the KVM machines on Proxmox.
+  proxmox_kvm:
+    api_user: "{{ proxmox_api_user }}"
+    api_password: "{{ proxmox_password }}"
+    api_host: "{{ item.value.proxmox_node_ip }}"
+    node: "{{ item.value.proxmox_node }}"
+    name: "{{ item.value.vm_name }}"
+    state: stopped
+  loop: "{{ dh_lab|dict2items }}"
+  loop_control:
+    pause: 1
+  tags:
+    - delete_dh_lab
+
 - name: DELETE the KVM machines on Proxmox.
   proxmox_kvm:
     api_user: "{{ proxmox_api_user }}"
