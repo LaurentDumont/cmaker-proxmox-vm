@@ -14,7 +14,9 @@
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
-  with_dict: "{{ proxmox_vm_dict }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
+  loop_control:
+    pause: 3
   tags:
     - deploy_cmaker
 
@@ -44,7 +46,7 @@
     --subnet "Provisionning-2"
   delegate_to: 127.0.0.1
   ignore_errors: yes
-  with_dict: "{{ proxmox_vm_dict }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
   tags:
     - deploy_cmaker
 
@@ -57,7 +59,9 @@
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
     state: started
-  with_dict: "{{ proxmox_vm_dict }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
+  loop_control:
+    pause: 2
   tags:
     - deploy_cmaker
 
@@ -150,5 +154,5 @@
     state: absent
   loop: "{{ dh_lab|dict2items }}"
   tags:
-    - delete_dh_lab
-⏎  
+    - delete_dh_lab  
+
