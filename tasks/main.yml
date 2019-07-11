@@ -10,13 +10,13 @@
     onboot: yes
     boot: 'ncda'
     net: '{"net0":"virtio={{ item.value.mac_address }},bridge=vmbr0,tag=99"}'
-    virtio: '{"virtio0":"local:{{ item.value.disk_size }},format=qcow2"}'
+    virtio: '{"virtio0":"{{ item.value.storage_name | default("local") }}:{{ item.value.disk_size }},format=qcow2"}'
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
   loop: "{{ proxmox_vm_dict|dict2items }}"
   loop_control:
-    pause: 3
+    pause: 5
   tags:
     - deploy_cmaker
 
@@ -78,14 +78,14 @@
     onboot: yes
     boot: 'ncda'
     net: '{"net0":"virtio={{ item.value.mac_address }},bridge=vmbr0,tag=99","net1":"virtio={{ item.value.mac_address_1 }},bridge=vmbr0,tag=101"}'
-    virtio: '{"virtio0":"local:{{ item.value.disk_size }},format=qcow2"}'
+    virtio: '{"virtio0":"{{ item.value.storage_name | default("local") }}:{{ item.value.disk_size }},format=qcow2"}'
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
     pool: "{{ item.value.pool | default('') }}"
   loop: "{{ dh_lab|dict2items }}"
   loop_control:
-    pause: 2
+    pause: 5
   tags:
     - deploy_dh_lab
 
@@ -155,4 +155,3 @@
   loop: "{{ dh_lab|dict2items }}"
   tags:
     - delete_dh_lab  
-
