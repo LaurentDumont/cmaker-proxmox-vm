@@ -51,14 +51,14 @@
     - deploy_cmaker
 
 
-- name: START the KVM machines on Proxmox.
+- name: Ensure state of VM in Proxmox.
   proxmox_kvm:
     api_user: root@pam
     api_password: "{{ proxmox_password }}"
     api_host: "{{ item.value.proxmox_node_ip }}"
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
-    state: started
+    state: "{{ item.value.state | default('started') }}"
   loop: "{{ proxmox_vm_dict|dict2items }}"
   loop_control:
     pause: 2
@@ -126,7 +126,7 @@
     api_host: "{{ item.value.proxmox_node_ip }}"
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
-    state: started
+    state: "{{ item.value.state | default('started') }}"
   loop: "{{ dh_lab|dict2items }}"
   tags:
     - deploy_dh_lab
