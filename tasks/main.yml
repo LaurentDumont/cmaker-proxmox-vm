@@ -36,7 +36,7 @@
     --ip "{{ item.value.vm_ip_address }}"
     --name "{{ item.value.vm_name }}"
     --interface "primary=true,mac={{ item.value.mac_address }},ip={{ item.value.vm_ip_address }},name=ens18,managed=true,provision=true,domain=cmaker.studio"
-    --operatingsystem "{{ item.value.os | default('Debian 9.7')   }}"
+    --operatingsystem "{{ item.value.os | default('Debian 10')   }}"
     --partition-table "{{ item.value.partition | default('CMaker - ubuntu_debian') }}"
     --location "Default Location"
     --organization "Default Organization"
@@ -47,7 +47,6 @@
   with_dict: "{{ proxmox_vm_dict }}"
   tags:
     - deploy_cmaker
-
 
 - name: START the KVM machines on Proxmox.
   proxmox_kvm:
@@ -151,4 +150,3 @@
   loop: "{{ dh_lab|dict2items }}"
   tags:
     - delete_dh_lab
-⏎  
