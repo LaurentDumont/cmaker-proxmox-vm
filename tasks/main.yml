@@ -10,11 +10,13 @@
     onboot: yes
     boot: 'ncda'
     net: '{"net0":"virtio={{ item.value.mac_address }},bridge=vmbr0,tag=99"}'
-    virtio: '{"virtio0":"local:{{ item.value.disk_size }},format=qcow2"}'
+    virtio: '{"virtio0":"{{ item.value.storage_name | default("local") }}:{{ item.value.disk_size }},format=qcow2"}'
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
-  with_dict: "{{ proxmox_vm_dict }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
+  loop_control:
+    pause: 5
   tags:
     - deploy_cmaker
 
@@ -44,19 +46,22 @@
     --subnet "Provisionning-2"
   delegate_to: 127.0.0.1
   ignore_errors: yes
-  with_dict: "{{ proxmox_vm_dict }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
   tags:
     - deploy_cmaker
 
-- name: START the KVM machines on Proxmox.
+
+- name: Ensure state of VM in Proxmox.
   proxmox_kvm:
     api_user: root@pam
     api_password: "{{ proxmox_password }}"
     api_host: "{{ item.value.proxmox_node_ip }}"
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
-    state: started
-  with_dict: "{{ proxmox_vm_dict }}"
+    state: "{{ item.value.state | default('started') }}"
+  loop: "{{ proxmox_vm_dict|dict2items }}"
+  loop_control:
+    pause: 2
   tags:
     - deploy_cmaker
 
@@ -73,14 +78,14 @@
     onboot: yes
     boot: 'ncda'
     net: '{"net0":"virtio={{ item.value.mac_address }},bridge=vmbr0,tag=99","net1":"virtio={{ item.value.mac_address_1 }},bridge=vmbr0,tag=101"}'
-    virtio: '{"virtio0":"local:{{ item.value.disk_size }},format=qcow2"}'
+    virtio: '{"virtio0":"{{ item.value.storage_name | default("local") }}:{{ item.value.disk_size }},format=qcow2"}'
     memory: "{{ item.value.memory | default('2048') }}"
     sockets: "{{ item.value.sockets | default('1') }}"
     cores: "{{ item.value.cores | default('1') }}"
     pool: "{{ item.value.pool | default('') }}"
   loop: "{{ dh_lab|dict2items }}"
   loop_control:
-    pause: 2
+    pause: 5
   tags:
     - deploy_dh_lab
 
@@ -121,7 +126,7 @@
     api_host: "{{ item.value.proxmox_node_ip }}"
     node: "{{ item.value.proxmox_node }}"
     name: "{{ item.value.vm_name }}"
-    state: started
+    state: "{{ item.value.state | default('started') }}"
   loop: "{{ dh_lab|dict2items }}"
   tags:
     - deploy_dh_lab
@@ -149,4 +154,4 @@
     state: absent
   loop: "{{ dh_lab|dict2items }}"
   tags:
-    - delete_dh_lab
+    - delete_dh_lab  
